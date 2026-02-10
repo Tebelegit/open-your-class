@@ -1,0 +1,59 @@
+{% extends 'base.html' %} 
+{% load static %}
+<link rel="stylesheet" href="{% static 'core/css/list.css' %}" />
+
+{% block title %} opyc | start study {% endblock %} 
+
+{% block main %}
+
+<div class="container p-4">
+  <h2 class="display-6 fw-bold">
+    Many categories added taught by qualified teachers
+  </h2>
+  <p>Just choose which course you want and start study.</p>
+
+  <hr style="margin: auto" width="50%" noshade="noshade" />
+
+  <div class="mt-4 category_list_and__course">
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+      {% for cats in categories %}
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button
+            class="accordion-button collapsed text-uppercase fs-5"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#flush-collapse-{{ cats.slug }}"
+            aria-expanded="false"
+            aria-controls="flush-collapse-{{ cats.slug }}"
+          >
+            {{ cats.name }}
+          </button>
+        </h2>
+        <div
+          id="flush-collapse-{{ cats.slug }}"
+          class="accordion-collapse collapse"
+          data-bs-parent="#accordionFlushExample"
+        >
+          <div class="accordion-body">
+            {% for course in cats.courses.all %}
+            <a
+              role="button"
+              style="padding: 12px"
+              class="d-inline-block fs-2 text-decoration-none text-dark pb-0 pt-0 border"
+              href="{% url 'chapter_list' cats.slug course.name %}"
+            >
+              {% if course.is_published %} {{ course.name }} {% else %}
+              <span> no course at moment. </span>
+              {% endif %}
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

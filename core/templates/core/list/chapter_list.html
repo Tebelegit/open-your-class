@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'core/css/list.css' %}" />
+
+{% block title %} chapters | {{ course.name }} {%endblock %} 
+
+{% block main %}
+<div class="container p-4">
+  <h2 class="display-6 fw-bold">Chapters on <u>{{ course.name }}</u></h2>
+  <br />
+  <hr class="w-50 text mx-auto" />
+
+  {% if chapters %}
+  <div class="mt-4 chapter_list">
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+      {% for chapter in chapters %}
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button
+            class="accordion-button collapsed text-uppercase fs-4"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#flush-collapse-{{ chapter.slug }}"
+            aria-expanded="false"
+            aria-controls="flush-collapse-{{ chapter.slug }}"
+          >
+            Chapter {{ chapter.order }} : {{ chapter.name }}
+          </button>
+        </h2>
+        <div
+          id="flush-collapse-{{ chapter.slug }}"
+          class="accordion-collapse collapse"
+          data-bs-parent="#accordionFlushExample"
+        >
+          <div class="accordion-body">
+            <p>{{ chapter.description }}</p>
+            <div class="d-flex justify-content-end">
+              {% with first_lesson=chapter.lessons.first %} 
+              {% if first_lesson%}
+              <a
+                href="{% url 'lesson_detail' chapter.course.category.slug chapter.course.name chapter.order first_lesson.slug %}"
+                class="d-inline-block bg-dark text-white p-3 text-decoration-none"
+              >
+                Start
+              </a>
+              {% else %}
+              <small class="text-muted">no lessons</small>
+              {% endif %} 
+              {% endwith %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
