@@ -10,37 +10,14 @@
   <h1>
     Opyc, <br />
     Open your class and teach easily.
-  </h1>
+  </h1> <hr class="w-100">
+  <div class="btn__link">
+    <a href="#!" class="btn btn-outline-dark rounded-0">
+      I'm teacher
+    </a>
+    <a href="#!" class="btn btn-outline-dark rounded-0">
+      I'm student
+    </a>
+  </div>
 </div>
-{% comment %}
-<div class="context__data">
-  <h2>Catégories</h2>
-  {% for category in categories %}
-  <p>{{ category.name }}</p>
-  {% endfor %}
-  <hr />
-  {% for c in course %}
-  <h3>Courses : {{ c.name }}</h3>
-  <br />
-  <hr />
-
-  {% for chapter in c.chapters.all %}
-  <h4>Chapitre {{ chapter.order }} : {{ chapter.name }}</h4>
-  <p>Objectif : {{ chapter.description }}</p>
-  <br />
-  <hr style="margin-top: 10px; width: 30%" />
-  {% if chapter.video_file %}
-  <video width="400px" src="{{ chapter.video_file.url }}" controls></video>
-  {% else %}
-  <p></p>
-  {% endif %} {% for lesson in chapter.lessons.all %}
-  <h5>Leçon {{ lesson.order }} : {{ lesson.title }}</h5>
-  <p>Contenu : {{ lesson.content }}</p>
-  {% endfor %} {% endfor %}
-  <br />
-
-  {% for enrollment in c.enrollments.all %}
-  <h5>{{ enrollment.student.username }} s'est inscris à ce cours.</h5>
-  {% endfor %} {% endfor %}
-</div>
-{% endcomment %} {% endblock %}
+{% endblock %}

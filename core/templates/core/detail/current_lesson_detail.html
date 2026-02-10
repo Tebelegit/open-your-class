@@ -1,5 +1,5 @@
 {% extends 'base.html' %} 
-{% block title %} opyc | {% endblock %} 
+{% block title %} opyc | {{ current_lesson.title }} {% endblock %} 
 
 {% load static %}
 <link rel="stylesheet" href="{% static 'core/css/detail.css' %}" />
@@ -74,7 +74,7 @@
 
   {% elif next_chapter_lesson %}
     <a href="{{ next_chapter_lesson.get_absolute_url }}"
-       class="btn btn-success">
+       class="btn btn-success rounded-0">
       Next chapter &raquo;
     </a>
 

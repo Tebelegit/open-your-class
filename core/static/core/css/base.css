@@ -28,27 +28,22 @@ h2 {
   min-height: 100vh;
 }
 
-header {
-  display: flex;          /* Active le mode Flexbox */
-  justify-content: center; /* Centre les éléments horizontalement */
-  align-items: center;     /* Aligne les éléments verticalement */
-  gap: 15px; 
-  text-align: center;              /* Crée l'espace précis entre chaque bouton */
-  padding: 20px;           /* Un peu d'espace autour du header */
-}
-
-.start, .home, .login {
+.start,
+.home,
+.login {
   text-decoration: none;
   background-color: rgb(0, 128, 98);
   color: whitesmoke;
-  padding: 12px 20px;      /* 12px haut/bas, 20px gauche/droite */
-  display: flex;           /* Flex aussi pour aligner l'icône et le texte */
+  padding: 12px 20px; /* 12px haut/bas, 20px gauche/droite */
+  display: flex; /* Flex aussi pour aligner l'icône et le texte */
   align-items: center;
-  gap: 8px;                /* Espace entre l'icône et le mot (home, login...) */
-  transition: 0.3s;        /* Pour un effet fluide au survol */
+  gap: 8px; /* Espace entre l'icône et le mot (home, login...) */
+  transition: 0.3s; /* Pour un effet fluide au survol */
 }
 
-.start:hover, .home:hover, .login:hover {
+.start:hover,
+.home:hover,
+.login:hover {
   filter: brightness(1.2); /* Éclaircit légèrement au survol */
 }
 
