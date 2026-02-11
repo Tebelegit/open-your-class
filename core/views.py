@@ -11,20 +11,18 @@ from .models import (
 class IndexView(TemplateView):
     template_name = 'index.html'
 
-
 class CategoryListView(ListView):
     model = Category
     template_name = 'core/list/category_list.html'
     context_object_name = 'categories'
    # paginate_by = 3
 
-
 class ChapterListView(ListView):
     model = Chapter
     template_name = 'core/list/chapter_list.html'
     context_object_name = 'chapters'
 
-    def get_queryset(self):
+    '''def get_queryset(self):
         course = Course.objects.get(
             name__iexact=self.kwargs['course_name'],
             category__slug=self.kwargs['category_slug'],
@@ -41,7 +39,7 @@ class ChapterListView(ListView):
             is_published=True
         )
 
-        return context
+        return context'''
 
 class LessonDetailView(DetailView):
     model = Lesson
@@ -49,7 +47,7 @@ class LessonDetailView(DetailView):
     context_object_name = 'current_lesson'
     slug_url_kwarg = 'lesson_slug'
 
-    def get_queryset(self):
+    '''def get_queryset(self):
         return (
             Lesson.objects
             .select_related(
@@ -99,5 +97,4 @@ class LessonDetailView(DetailView):
         else:
             context['next_chapter_lesson'] = None
 
-        return context
-
+        return context'''

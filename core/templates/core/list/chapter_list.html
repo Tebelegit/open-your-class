@@ -3,9 +3,10 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'core/css/list.css' %}" />
 
-{% block title %} chapters | {{ course.name }} {%endblock %} 
+{% block title %} chapters | {{ course.title }} {%endblock %} 
 
 {% block main %}
+{% comment %}
 <div class="container p-4">
   <h2 class="display-6 fw-bold">Chapters on <u>{{ course.name }}</u></h2>
   <br />
@@ -57,4 +58,5 @@
   </div>
   {% endif %}
 </div>
+{% endcomment %}
 {% endblock %}

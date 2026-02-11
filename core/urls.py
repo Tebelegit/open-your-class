@@ -3,12 +3,8 @@ from . import views
 
 extra_patterns = [
     path('', views.CategoryListView.as_view(), name='category_list'),
-    path('<slug:category_slug>/<str:course_name>/', views.ChapterListView.as_view(), name='chapter_list'),
-    path(
-        '<slug:category_slug>/<slug:course_name>/Chapter-<int:chapter_order>/<slug:lesson_slug>/',
-        views.LessonDetailView.as_view(),
-        name='lesson_detail'
-    )
+    # path('<slug:category_slug>/<str:course_name>/', views.ChapterListView.as_view(), name='chapter_list'),
+    # path('<slug:category_slug>/<slug:course_name>/Chapter-<int:chapter_order>/<slug:lesson_slug>/', views.LessonDetailView.as_view(), name='lesson_detail')
 ]
 
 urlpatterns = [

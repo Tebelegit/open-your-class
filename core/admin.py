@@ -1,23 +1,32 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import (
-    TheUser, Category, Course, Chapter, Lesson, Enrollment
+    TheUser, Category, Module, Course, Chapter, Lesson, Enrollment
 )
 
 class LessonInline(admin.TabularInline):
     model = Lesson
     extra = 1
-    fields = ('order', 'title', 'content', 'slug')
+    exclude = ('slug',)
+    fields = ('order', 'title', 'content')
 
 class ChapterInline(admin.TabularInline):
     model = Chapter
     extra = 1
-    fields = ('order', 'name', 'slug')
+    exclude = ('slug',)
+    fields = ('order', 'name')
 
 class CourseInline(admin.TabularInline):
     model = Course
-    extra = 0
-    fields = ('name', 'teacher', 'is_published')
+    extra = 1
+    exclude = ('slug',)
+    fields = ('title', 'teacher', 'is_published')
+
+class ModuleInline(admin.TabularInline):
+    model = Module
+    extra = 1
+    exclude = ('slug',)
+    fields = ('name',)
 
 class EnrollmentInline(admin.TabularInline):
     model = Enrollment
@@ -35,14 +44,23 @@ class TheUserAdmin(UserAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug')
+    list_display = ('name',)
+    exclude = ('slug',)
+    inlines = [ModuleInline]
+
+@admin.register(Module)
+class ModuleAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category')
+    list_filter = ('category',)
+    exclude = ('slug',)
     inlines = [CourseInline]
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'teacher', 'is_published', 'created_at')
-    list_filter = ('category', 'is_published', 'teacher')
-    search_fields = ('name', 'description')
+    list_display = ('title', 'module', 'teacher', 'is_published', 'created_at')
+    list_filter = ('module', 'is_published', 'teacher')
+    search_fields = ('title', 'description')
+    exclude = ('slug',)
     inlines = [ChapterInline, EnrollmentInline]
 
 @admin.register(Chapter)
@@ -50,6 +68,7 @@ class ChapterAdmin(admin.ModelAdmin):
     list_display = ('name', 'course', 'order')
     list_filter = ('course',)
     search_fields = ('name',)
+    exclude = ('slug',)
     inlines = [LessonInline]
 
 @admin.register(Lesson)
@@ -57,6 +76,7 @@ class LessonAdmin(admin.ModelAdmin):
     list_display = ('title', 'chapter', 'order')
     list_filter = ('chapter__course', 'chapter')
     search_fields = ('title', 'content')
+    exclude = ('slug',)
 
 @admin.register(Enrollment)
 class EnrollmentAdmin(admin.ModelAdmin):

@@ -3,8 +3,8 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import FileExtensionValidator
+from django.core.exceptions import ValidationError
 from .utils import BaseTimeStamp, SlugBaseModel
-
 
 class TheUser(AbstractUser):
     STUDENT = 'student'
@@ -29,43 +29,67 @@ class TheUser(AbstractUser):
     def is_student(self):
         return self.role == self.STUDENT
 
-
 class Category(SlugBaseModel, BaseTimeStamp):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = "Catégories"
 
     def __str__(self):
         return self.name
 
-    class Meta:
-        verbose_name = 'Catégorie de cours'
-        verbose_name_plural = 'Catégories de cours'
 
-
-class Course(SlugBaseModel, BaseTimeStamp):
+class Module(SlugBaseModel, BaseTimeStamp):
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
-        related_name='courses'
+        related_name="modules"
+    )
+    name = models.CharField(max_length=200)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['category', 'name'],
+                name='unique_module_per_category'
+            )
+        ]
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+class Course(SlugBaseModel, BaseTimeStamp):
+    module = models.ForeignKey(
+        Module,
+        on_delete=models.CASCADE,
+        related_name='courses',
     )
     teacher = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='courses_taught'
     )
-    name = models.CharField(max_length=150)
+
+    title = models.CharField(max_length=150)
     description = models.TextField()
     is_published = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['teacher', 'title'],
+                name='unique_course_title_per_teacher'
+            )
+        ]
+
     def __str__(self):
-        return self.name
+        return self.title
 
     def get_absolute_url(self):
         return reverse('course_detail', kwargs={'slug': self.slug})
-
-    class Meta:
-        verbose_name = 'Course'
-        ordering = ['-created_at']
-
 
 class Chapter(SlugBaseModel, BaseTimeStamp):
     course = models.ForeignKey(
@@ -73,34 +97,26 @@ class Chapter(SlugBaseModel, BaseTimeStamp):
         on_delete=models.CASCADE,
         related_name='chapters'
     )
+
     name = models.CharField(max_length=150)
-    description = models.TextField(
-        help_text="présentation globale du chapitre (objectifs, contexte)"
-    )
-    video_file = models.FileField(
-        max_length=1000,
-        upload_to='chapters/videos/%Y/%m/%d/',
-        blank=True,
-        null=True,
-        validators=[
-            FileExtensionValidator(
-                allowed_extensions=['mp4', 'mkv'],
-                message="erreur. formats autorisés : .mp4, .mkv"
-            )
-        ]
-    )
+    description = models.TextField()
     order = models.PositiveIntegerField(default=1)
 
-    def __str__(self):
-        return f'Chapitre {self.order} : {self.name}'
-
-    def get_absolute_url(self):
-        return reverse('chapter_detail', kwargs={'chapter_slug': self.slug})
-
     class Meta:
-        verbose_name = 'Chapitre'
         ordering = ['order']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['course', 'name'],
+                name='unique_chapter_name_per_course'
+            ),
+            models.UniqueConstraint(
+                fields=['course', 'order'],
+                name='unique_chapter_order_per_course'
+            )
+        ]
 
+    def __str__(self):
+        return f"Chapitre {self.order} - {self.name}"
 
 class Lesson(SlugBaseModel, BaseTimeStamp):
     chapter = models.ForeignKey(
@@ -108,30 +124,80 @@ class Lesson(SlugBaseModel, BaseTimeStamp):
         on_delete=models.CASCADE,
         related_name='lessons'
     )
+
     title = models.CharField(max_length=150)
-    content = models.TextField(
-        help_text="content ciblé : un concept précis"
-    )
+    content = models.TextField()
     order = models.PositiveIntegerField(default=1)
 
+    class Meta:
+        ordering = ['order']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['chapter', 'title'],
+                name='unique_lesson_title_per_chapter'
+            ),
+            models.UniqueConstraint(
+                fields=['chapter', 'order'],
+                name='unique_lesson_order_per_chapter'
+            )
+        ]
+
     def __str__(self):
-        return f'Leçon {self.order} : {self.title}'
+        return f"Leçon {self.order} - {self.title}"
 
     def get_absolute_url(self):
         return reverse(
             'lesson_detail',
             kwargs={
-                'category_slug': self.chapter.course.category.slug,
-                'course_name': self.chapter.course.name,
-                'chapter_order': self.chapter.order,
+                'category_slug': self.chapter.course.module.category.slug,
+                'course_slug': self.chapter.course.slug,
+                'chapter_slug': self.chapter.slug,
                 'lesson_slug': self.slug,
             }
         )
 
-    class Meta:
-        verbose_name = 'Leçon'
-        ordering = ['order']
 
+# ==============================
+# LESSON VIDEO (SCALABLE)
+# ==============================
+
+class LessonVideo(BaseTimeStamp):
+    lesson = models.ForeignKey(
+        Lesson,
+        on_delete=models.CASCADE,
+        related_name="videos"
+    )
+
+    title = models.CharField(max_length=150, blank=True)
+
+    video_file = models.FileField(
+        upload_to='lessons/videos/%Y/%m/%d/',
+        validators=[
+            FileExtensionValidator(
+                allowed_extensions=['mp4', 'mkv'],
+                message="Formats autorisés : .mp4, .mkv"
+            )
+        ]
+    )
+
+    order = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        ordering = ['order']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['lesson', 'order'],
+                name='unique_video_order_per_lesson'
+            )
+        ]
+
+    def __str__(self):
+        return f"Vidéo {self.order} - {self.lesson.title}"
+
+
+# ==============================
+# ENROLLMENT
+# ==============================
 
 class Enrollment(BaseTimeStamp):
     student = models.ForeignKey(
@@ -145,11 +211,7 @@ class Enrollment(BaseTimeStamp):
         related_name='enrollments'
     )
 
-    def __str__(self):
-        return f'{self.student.username} s\'est inscris sur le cours : {self.course} '
-
     class Meta:
-        verbose_name = 'Inscription au course'
         ordering = ['-created_at']
         constraints = [
             models.UniqueConstraint(
@@ -157,3 +219,10 @@ class Enrollment(BaseTimeStamp):
                 name='unique_student_course_enrollment'
             )
         ]
+
+    def clean(self):
+        if not self.student.is_student:
+            raise ValidationError("Seuls les étudiants peuvent s'inscrire à un cours.")
+
+    def __str__(self):
+        return f"{self.student.username} inscrit à {self.course.title}"
