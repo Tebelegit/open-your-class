@@ -12,4 +12,8 @@ extra_patterns = [
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
     path('start-study/', include(extra_patterns)),
+    path('create-course/', views.CourseCreateView.as_view(), name='create_course'),
+    
+    # auth
+    path('account/register/', views.RegisterView.as_view(), name='register'),
 ]

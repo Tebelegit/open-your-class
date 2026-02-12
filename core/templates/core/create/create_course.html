@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="container mt-4">
+    <h2>Créer un cours</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">
+            Créer le cours
+        </button>
+    </form>
+</div>
+{% endblock %}

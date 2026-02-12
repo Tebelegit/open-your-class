@@ -34,6 +34,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+LOGIN_REDIRECT_URL = 'index' # ou '/'
+LOGOUT_REDIRECT_URL  = 'login'
 
 # Application definition
 

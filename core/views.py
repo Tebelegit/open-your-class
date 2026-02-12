@@ -1,21 +1,28 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth import login
+from django.contrib import messages
+from django.urls import reverse_lazy
 from django.views.generic import (
-    TemplateView, ListView, DetailView
+    TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 )
 from .models import (
-    Category, Module, Course, Chapter, Lesson, Enrollment
+    TheUser, Category, Module, Course, Chapter, Lesson, Enrollment
 )
 
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from .forms import (
+    CourseCreateForm, RegisterForm
+)
 # Create your views here.
 
 class IndexView(TemplateView):
     template_name = 'index.html'
 
-class CategoryListView(ListView):
+class CategoryListView(LoginRequiredMixin, ListView):
     model = Category
     template_name = 'core/list/category_list.html'
     context_object_name = 'categories'
-   # paginate_by = 3
+    login_url = 'login'
 
     def get_queryset(self):
         return Category.objects.all().prefetch_related('modules')
@@ -116,3 +123,35 @@ class LessonDetailView(DetailView):
                 ).select_related('chapter__course__module__category').order_by('order').first()
                 
         return context
+    
+
+''' forms '''
+class RegisterView(CreateView):
+    model = TheUser
+    form_class = RegisterForm
+    template_name = 'core/auth/register.html'
+  #  success_url = 'login'
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        messages.success(self.request, 'inscription reussie.')
+        return super().form_valid(form)
+
+    
+    def form_invalid(self, form):
+        return super().form_invalid(form)
+    
+class CourseCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Course
+    form_class = CourseCreateForm
+    template_name = 'core/create/create_course.html'
+    success_url = reverse_lazy('index')
+
+    # seul un teacher cree des cours.
+    def test_func(self):
+        return self.request.user.teacher
+
+    def form_valid(self, form):
+        form.instance.teacher = self.request.user
+        return super().form_valid(form)

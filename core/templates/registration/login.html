@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %} opyc | log in {% endblock %}
+
+{% block main %}
+<form action="{% url 'login' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="OK"> <br>
+    <a class="text-success text-decoration-none" href="{% url 'register' %}">
+        Not a member? Create my 
+        account
+    </a>
+</form>
+{% endblock %}

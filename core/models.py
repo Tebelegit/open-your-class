@@ -40,7 +40,6 @@ class Category(SlugBaseModel, BaseTimeStamp):
     def __str__(self):
         return self.name
 
-
 class Module(SlugBaseModel, BaseTimeStamp):
     category = models.ForeignKey(
         Category,
@@ -60,7 +59,6 @@ class Module(SlugBaseModel, BaseTimeStamp):
 
     def __str__(self):
         return self.name
-
 
 class Course(SlugBaseModel, BaseTimeStamp):
     module = models.ForeignKey(
@@ -93,7 +91,6 @@ class Course(SlugBaseModel, BaseTimeStamp):
     def get_absolute_url(self):
         return reverse('course_detail', kwargs={'slug': self.slug})
 
-
 class Chapter(SlugBaseModel, BaseTimeStamp):
     course = models.ForeignKey(
         Course,
@@ -120,7 +117,6 @@ class Chapter(SlugBaseModel, BaseTimeStamp):
 
     def __str__(self):
         return f"Chapitre {self.order} - {self.name}"
-
 
 class Lesson(SlugBaseModel, BaseTimeStamp):
     chapter = models.ForeignKey(
