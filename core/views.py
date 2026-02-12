@@ -20,10 +20,6 @@ class CategoryListView(ListView):
     def get_queryset(self):
         return Category.objects.all().prefetch_related('modules')
 
-class ModuleListView(ListView):
-    model = Module
-    template_name = 'core/list/module_list.html'
-
 class CourseListView(ListView):
     model = Course
     template_name = 'core/list/course_list.html'
