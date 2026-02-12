@@ -1,16 +1,11 @@
-{% extends 'base.html' %}
-
-{% load static %}
+{% extends 'base.html' %} {% load static %}
 <link rel="stylesheet" href="{% static 'core/css/list.css' %}" />
 
-{% block title %} chapters | {{ course.title }} {%endblock %} 
-
-{% block main %}
-{% comment %}
+{% block title %} chapters | {{ course.title }} {% endblock %} {% block main %}
 <div class="container p-4">
-  <h2 class="display-6 fw-bold">Chapters on <u>{{ course.name }}</u></h2>
+  <h2 class="display-6 fw-bold">Chapters on : {{ course.title }}</h2>
   <br />
-  <hr class="w-50 text mx-auto" />
+  <hr class="w-50 mx-auto" />
 
   {% if chapters %}
   <div class="mt-4 chapter_list">
@@ -29,34 +24,39 @@
             Chapter {{ chapter.order }} : {{ chapter.name }}
           </button>
         </h2>
+
         <div
           id="flush-collapse-{{ chapter.slug }}"
           class="accordion-collapse collapse"
           data-bs-parent="#accordionFlushExample"
         >
           <div class="accordion-body">
-            <p>{{ chapter.description }}</p>
-            <div class="d-flex justify-content-end">
-              {% with first_lesson=chapter.lessons.first %} 
-              {% if first_lesson%}
+            <p class="text-muted">{{ chapter.description }}</p>
+
+            {% with first_lesson=chapter.lessons.first %} {% if first_lesson %}
+            <div class="mt-3">
               <a
-                href="{% url 'lesson_detail' chapter.course.category.slug chapter.course.name chapter.order first_lesson.slug %}"
-                class="d-inline-block bg-dark text-white p-3 text-decoration-none"
+                href="{{ first_lesson.get_absolute_url }}"
+                class="btn btn-success btn-lg rounded-0 px-4"
               >
-                Start
+                <i class="bi bi-play-fill"></i> Commencer le chapitre
               </a>
-              {% else %}
-              <small class="text-muted">no lessons</small>
-              {% endif %} 
-              {% endwith %}
             </div>
+            {% else %}
+            <p class="small text-danger">
+              Aucune leçon disponible dans ce chapitre.
+            </p>
+            {% endif %} {% endwith %}
           </div>
         </div>
       </div>
       {% endfor %}
     </div>
   </div>
+  {% else %}
+  <div class="text-center mt-5">
+    <p class="lead">Aucun chapitre n'a été publié pour ce cours.</p>
+  </div>
   {% endif %}
 </div>
-{% endcomment %}
 {% endblock %}

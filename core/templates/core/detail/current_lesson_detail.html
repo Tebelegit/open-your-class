@@ -2,14 +2,11 @@
 {% block title %} opyc | {{ current_lesson.title }} {% endblock %} 
 
 {% load static %}
-<link rel="stylesheet" href="{% static 'core/css/detail.css' %}" />
-
 {% block main %}
-{% comment %}
-<div class="container-fluid p-4">
+<div class="container-fluid p-4 mt-4">
   <div class="row">
     <aside class="col-md-3 border-end">
-      <h3 class="fs-5">Summary of chapter</h3>
+      <h3 class="fs-5 fw-bold mb-3">Summary of chapter</h3>
       <div class="list-group list-group-flush">
         {% for l in all_lessons %}
         <a
@@ -23,71 +20,57 @@
     </aside>
 
     <main class="col-md-9 ps-md-5">
-      <div class="chapter-info mb-5">
-        <h1 class="display-6">
-           Chapitre {{ current_lesson.chapter.order }}.  {{ current_lesson.chapter.name }}
+      <div class="chapter-info mb-4">
+        <h1 class="display-6 fw-bold">
+           Chapitre {{ current_lesson.chapter.order }}. {{ current_lesson.chapter.name }}
         </h1>
         <p class="lead text-muted">{{ current_lesson.chapter.description }}</p>
 
-        <div style="margin-top: 50px;" class="ratio ratio-16x9 bg-dark rounded shadow overflow-hidden">
-        <video controls preload="auto" class="w-100">
-            {% if current_lesson.chapter.video_file %}
-                <source src="{{ current_lesson.chapter.video_file.url }}">
-            {% endif %}
-            Your browser does not support the video tag.
-        </video>
-
+        <div class="ratio ratio-16x9 bg-dark rounded shadow overflow-hidden mt-4">
+          <video controls preload="auto" class="w-100">
+              {% if current_lesson.video_file %}
+                  <source src="{{ current_lesson.video_file.url }}">
+              {% elif current_lesson.chapter.video_file %}
+                  <source src="{{ current_lesson.chapter.video_file.url }}">
+              {% endif %}
+              Your browser does not support the video tag.
+          </video>
         </div>
       </div>
 
       <hr />
 
       <div class="lesson-detail mt-4">
-        <h2 class="h3">
+        <h2 class="h3 fw-bold">
           Lesson {{ current_lesson.order }} : {{ current_lesson.title }}
         </h2>
         <div class="content mt-3 fs-5">
           {{ current_lesson.content|linebreaks }}
         </div>
       </div>
+
+      <div class="d-flex justify-content-between mt-5 pb-5">
+        {% if previous_lesson %}
+          <a href="{{ previous_lesson.get_absolute_url }}" class="btn btn-outline-secondary rounded-0">
+            &laquo; Previous lesson
+          </a>
+        {% else %}
+          <button class="btn btn-outline-secondary rounded-0" disabled>&laquo; First lesson</button>
+        {% endif %}
+
+        {% if next_lesson %}
+          <a href="{{ next_lesson.get_absolute_url }}" class="btn btn-success rounded-0 px-4">
+            Next lesson &raquo;
+          </a>
+        {% elif next_chapter_lesson %}
+          <a href="{{ next_chapter_lesson.get_absolute_url }}" class="btn btn-primary rounded-0 px-4">
+            Next chapter &raquo;
+          </a>
+        {% else %}
+          <button class="btn btn-secondary rounded-0" disabled>Course finished !</button>
+        {% endif %}
+      </div>
     </main>
   </div>
-
-  <div class="d-flex justify-content-between mt-5">
-
-  {% if previous_lesson %}
-    <a href="{{ previous_lesson.get_absolute_url }}"
-       class="btn btn-outline-secondary rounded-0">
-      &laquo; previous lesson
-    </a>
-  {% else %}
-    <button class="btn btn-outline-secondary rounded-0" disabled>
-      &laquo; previous/precedent lesson
-    </button>
-  {% endif %}
-
-  {# next lesson or next chapter #}
-  {% if next_lesson %}
-    <a href="{{ next_lesson.get_absolute_url }}"
-       class="btn btn-success rounded-0">
-      Next lesson &raquo;
-    </a>
-
-  {% elif next_chapter_lesson %}
-    <a href="{{ next_chapter_lesson.get_absolute_url }}"
-       class="btn btn-success rounded-0">
-      Next chapter &raquo;
-    </a>
-
-  {% else %}
-    <button class="btn btn-secondary rounded-0" disabled>
-      finish ?
-    </button>
-  {% endif %}
-
-  </div>
-
-
 </div>
-{% endcomment %}
-{% endblock %} {% block extra_js %} {% endblock %}
+{% endblock %}

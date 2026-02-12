@@ -6,6 +6,7 @@ from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 from .utils import BaseTimeStamp, SlugBaseModel
 
+
 class TheUser(AbstractUser):
     STUDENT = 'student'
     TEACHER = 'teacher'
@@ -60,6 +61,7 @@ class Module(SlugBaseModel, BaseTimeStamp):
     def __str__(self):
         return self.name
 
+
 class Course(SlugBaseModel, BaseTimeStamp):
     module = models.ForeignKey(
         Module,
@@ -77,7 +79,7 @@ class Course(SlugBaseModel, BaseTimeStamp):
     is_published = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['created_at']
         constraints = [
             models.UniqueConstraint(
                 fields=['teacher', 'title'],
@@ -90,6 +92,7 @@ class Course(SlugBaseModel, BaseTimeStamp):
 
     def get_absolute_url(self):
         return reverse('course_detail', kwargs={'slug': self.slug})
+
 
 class Chapter(SlugBaseModel, BaseTimeStamp):
     course = models.ForeignKey(
@@ -118,6 +121,7 @@ class Chapter(SlugBaseModel, BaseTimeStamp):
     def __str__(self):
         return f"Chapitre {self.order} - {self.name}"
 
+
 class Lesson(SlugBaseModel, BaseTimeStamp):
     chapter = models.ForeignKey(
         Chapter,
@@ -127,6 +131,20 @@ class Lesson(SlugBaseModel, BaseTimeStamp):
 
     title = models.CharField(max_length=150)
     content = models.TextField()
+
+    video_file = models.FileField(
+        upload_to='lessons/videos/%Y/%m/%d/',
+        blank=True,
+        null=True,
+        validators=[
+            FileExtensionValidator(
+                allowed_extensions=['mp4', 'mkv'],
+                message="Formats autorisés : .mp4, .mkv"
+            )
+        ],
+        max_length=1000
+    )
+
     order = models.PositiveIntegerField(default=1)
 
     class Meta:
@@ -150,54 +168,12 @@ class Lesson(SlugBaseModel, BaseTimeStamp):
             'lesson_detail',
             kwargs={
                 'category_slug': self.chapter.course.module.category.slug,
+                'module_slug': self.chapter.course.module.slug,
                 'course_slug': self.chapter.course.slug,
                 'chapter_slug': self.chapter.slug,
                 'lesson_slug': self.slug,
             }
         )
-
-
-# ==============================
-# LESSON VIDEO (SCALABLE)
-# ==============================
-
-class LessonVideo(BaseTimeStamp):
-    lesson = models.ForeignKey(
-        Lesson,
-        on_delete=models.CASCADE,
-        related_name="videos"
-    )
-
-    title = models.CharField(max_length=150, blank=True)
-
-    video_file = models.FileField(
-        upload_to='lessons/videos/%Y/%m/%d/',
-        validators=[
-            FileExtensionValidator(
-                allowed_extensions=['mp4', 'mkv'],
-                message="Formats autorisés : .mp4, .mkv"
-            )
-        ]
-    )
-
-    order = models.PositiveIntegerField(default=1)
-
-    class Meta:
-        ordering = ['order']
-        constraints = [
-            models.UniqueConstraint(
-                fields=['lesson', 'order'],
-                name='unique_video_order_per_lesson'
-            )
-        ]
-
-    def __str__(self):
-        return f"Vidéo {self.order} - {self.lesson.title}"
-
-
-# ==============================
-# ENROLLMENT
-# ==============================
 
 class Enrollment(BaseTimeStamp):
     student = models.ForeignKey(

@@ -59,6 +59,7 @@ class ModuleAdmin(admin.ModelAdmin):
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('title', 'module', 'teacher', 'is_published', 'created_at')
     list_filter = ('module', 'is_published', 'teacher')
+    list_editable = ('is_published',)
     search_fields = ('title', 'description')
     exclude = ('slug',)
     inlines = [ChapterInline, EnrollmentInline]

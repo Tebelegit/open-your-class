@@ -1,14 +1,51 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} 
+{% load static %} {% block title %} opyc | {{ module.name }} {% endblock %} {% block main %}
+<div class="container py-5">
+  <div class="d-flex align-items-center mb-4">
+    <h1 class="fw-bold">
+      Cours : <span> {{ module.name }} </span>
+    </h1>
+  </div>
 
-{% block title %}
-opyc | courses of {{ course. }}
-{% endblock %}
+  <div class="accordion accordion-flush shadow-sm" id="moduleAccordion">
+    {% for course in courses %}
+    <div class="accordion-item border rounded mb-2">
+      <h2 class="accordion-header" id="heading-{{ course.slug }}">
+        <button
+          class="accordion-button collapsed fw-semibold text-dark"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapse-{{ course.slug }}"
+          aria-expanded="false"
+          aria-controls="collapse-{{ course.slug }}"
+        >
+          {{ course.title }}
+        </button>
+      </h2>
 
-{% load static %}
-<link rel="stylesheet" href="{% static 'core/css/list.css' %}">
+      <div
+        id="collapse-{{ course.slug }}"
+        class="accordion-collapse collapse"
+        aria-labelledby="heading-{{ course.slug }}"
+        data-bs-parent="#moduleAccordion"
+      >
+        <div class="accordion-body bg-light">
+          <p class="text-muted mb-3">{{ course.description }}</p>
 
-{% block main %}
-{% endblock %}
-
-{% block extra_js %}
+          <div class="list-group">
+            <a href="{% url 'chapter_list' module.category.slug module.slug course.slug %}" 
+               class="btn btn-outline-primary rounded-pill px-4">
+                Voir les chapitres <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="text-center">
+      no course for momnet.
+    </div>
+    {% endfor %}
+  </div>
+</div>
 {% endblock %}

@@ -36,15 +36,14 @@
           data-bs-parent="#accordionFlushExample"
         >
           <div class="accordion-body">
-            {% for course in cats.courses.all %}
+            {% for module in cats.modules.all %}
             <a
               role="button"
-              style="padding: 12px"
+              style="padding: 20px"
               class="d-inline-block fs-2 text-decoration-none text-dark pb-0 pt-0 border"
-              href="{% url 'chapter_list' cats.slug course.name %}"
-            >
-              {% if course.is_published %} {{ course.name }} {% else %}
-              <span> no course at moment. </span>
+              href="{% url 'course_list' cats.slug module.slug %}"            >
+              {% if module %} {{ module.name }} {% else %}
+              <span> no module. </span>
               {% endif %}
             </a>
             {% endfor %}
