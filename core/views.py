@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import login
+from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -11,7 +12,7 @@ from .models import (
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import (
-    CourseCreateForm, RegisterForm
+    CourseCreateForm, RegisterForm, LoginForm
 )
 # Create your views here.
 
@@ -124,7 +125,6 @@ class LessonDetailView(DetailView):
                 
         return context
     
-
 ''' forms '''
 class RegisterView(CreateView):
     model = TheUser
@@ -142,6 +142,10 @@ class RegisterView(CreateView):
     def form_invalid(self, form):
         return super().form_invalid(form)
     
+class CustomLoginFormView(LoginView):
+    template_name = 'registration/login.html'
+    authentication_form = LoginForm
+    
 class CourseCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Course
     form_class = CourseCreateForm
@@ -155,3 +159,6 @@ class CourseCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     def form_valid(self, form):
         form.instance.teacher = self.request.user
         return super().form_valid(form)
+
+
+''' profile '''

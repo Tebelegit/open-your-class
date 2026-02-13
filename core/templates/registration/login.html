@@ -1,15 +1,69 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} 
 
-{% block title %} opyc | log in {% endblock %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'core/css/login.css' %}" />
+
+{% block title %} opyc | log in {% endblock %} 
 
 {% block main %}
-<form action="{% url 'login' %}" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="OK"> <br>
-    <a class="text-success text-decoration-none" href="{% url 'register' %}">
-        Not a member? Create my 
-        account
-    </a>
-</form>
+<div class="container d-flex justify-content-center align-items-center vh-100">
+  <div
+    class="card no-radius no-shadow border border-secondary-subtle p-5"
+    style="width: 100%; max-width: 400px"
+  >
+    <h3 class="text-center mb-5 fw-light">Connexion</h3>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="mb-4">
+        <label class="form-label small text-muted text-uppercase"
+          >Nom d'utilisateur</label
+        >
+        {{ form.username }} {% if form.username.errors %}
+        <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label small text-muted text-uppercase"
+          >Mot de passe</label
+        >
+        <div class="password-container">
+          {{ form.password }}
+          <i class="bi bi-eye toggle-eye" id="togglePassword"></i>
+        </div>
+        {% if form.password.errors %}
+        <div class="text-danger small mt-1">{{ form.password.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger no-radius small">
+        {{ form.non_field_errors }}
+      </div>
+      {% endif %}
+
+      <button
+        type="submit"
+        class="btn btn-dark w-100 no-radius text-uppercase py-2 fw-bold mt-3"
+      >
+        Se connecter
+      </button>
+
+      <div class="text-center mt-4">
+        <p class="text-lowercase text-muted small">
+          pas encore de compte ?
+          <a
+            href="{% url 'register' %}"
+            class="text-dark fw-bold text-decoration-none"
+            >inscrivez-vous</a
+          >
+        </p>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script src="{% static 'core/js/form.js' %}" defer></script>
 {% endblock %}

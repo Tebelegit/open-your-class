@@ -1,0 +1,32 @@
+/* Design Brut : Pas d'arrondis, pas d'ombres */
+.no-radius {
+  border-radius: 0 !important;
+}
+.no-shadow {
+  box-shadow: none !important;
+}
+
+/* Input avec uniquement bordure basse */
+.input-underline {
+  border: none !important;
+  border-bottom: 1px solid #dee2e6 !important;
+  background-color: transparent !important;
+  padding-left: 0 !important;
+}
+.input-underline:focus {
+  box-shadow: none !important;
+  border-bottom: 1px solid #000 !important;
+}
+
+/* Positionnement de l'icône */
+.password-container {
+  position: relative;
+}
+.toggle-eye {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6c757d;
+}
