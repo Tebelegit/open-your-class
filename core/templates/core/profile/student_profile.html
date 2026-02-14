@@ -1,0 +1,44 @@
+{% extends 'base.html' %} 
+
+{% block title %} opyc | dashboard - {{ user.username
+}} 
+{% endblock %} 
+
+{% block extra_head %} 
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'core/css/profile.css' %}" />
+
+
+{% endblock %} 
+
+{% block main %}
+<div class="text-center py-2 px-4">
+  <h1>welcome, student @{{ user.username }}</h1>
+  <hr class="w-50 mx-auto" />
+
+  <aside>
+    <h2>cours reservés</h2>
+    <hr class="w-50 mx-auto" />
+
+    <div class="mx-auto" style="max-width: 500px">
+      {% for bc in booked_courses %}
+      <div class="d-flex gap-2 border-bottom pb-2 p-2">
+        <span class="text-muted">{{ forloop.counter }}.</span>
+        <a style="color: goldenrod; text-decoration: none" href="#!">
+          {{ bc.course.title }}
+        </a>
+      </div>
+      {% empty %}
+      <div class="mt-4">
+        <p class="text-muted">you have no booked courses for moment.</p>
+        <hr class="w-50 mx-auto" />
+        <a href="#!" class="text-decoration-none rounded-0 btn btn-dark p-3">
+          make a new booking!
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </aside>
+</div>
+{% endblock %}

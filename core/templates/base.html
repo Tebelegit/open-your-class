@@ -37,7 +37,7 @@
             {{ user.username }}
           </span>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#!">Profile</a></li>
+            <li><a class="dropdown-item" href="{% url 'dashboard_control' %}" target="_self" rel="noopener noreferrer">Profile</a></li>
             <li><hr class="dropdown-divider" /></li>
             <li>
               <form

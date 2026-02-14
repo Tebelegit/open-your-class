@@ -1,5 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseRedirect
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from django.urls import reverse_lazy
@@ -162,3 +164,33 @@ class CourseCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 
 ''' profile '''
+@login_required
+def dashboard_view(request):
+    if request.user.is_teacher:
+        return redirect('dashboard_teacher')
+    
+    elif request.user.is_student:
+        return redirect('dashboard_student')
+    
+    else:
+        return redirect('index')
+    
+
+@login_required
+def dashboard_teacher_view(request):
+    courses = request.user.courses_taught.filter(
+        is_published=True
+    )
+    context = {
+        'courses': courses
+    }
+    return render(request, 'core/profile/teacher_profile.html', context)
+
+@login_required
+def dashboard_student_view(request):
+    booked_courses = request.user.enrollments.select_related('course')
+    context = {
+        'booked_courses': booked_courses
+    }
+
+    return render(request, 'core/profile/student_profile.html', context)

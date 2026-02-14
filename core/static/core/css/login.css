@@ -1,10 +1,4 @@
 /* Design Brut : Pas d'arrondis, pas d'ombres */
-.no-radius {
-  border-radius: 0 !important;
-}
-.no-shadow {
-  box-shadow: none !important;
-}
 
 /* Input avec uniquement bordure basse */
 .input-underline {
@@ -29,4 +23,9 @@
   transform: translateY(-50%);
   cursor: pointer;
   color: #6c757d;
+}
+
+.form-control {
+  border: none !important;
+  border-bottom: 1px solid gray;
 }

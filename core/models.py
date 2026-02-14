@@ -117,6 +117,13 @@ class Chapter(SlugBaseModel, BaseTimeStamp):
 
     def __str__(self):
         return f"Chapitre {self.order} - {self.name}"
+    
+    def get_absolute_url(self):
+        return reverse('chapter_detail', kwargs={
+            'category_slug': self.course.module.category.slug,
+            'module_slug': self.course.module.slug,
+            'course_slug': self.course.slug
+        })
 
 class Lesson(SlugBaseModel, BaseTimeStamp):
     chapter = models.ForeignKey(
@@ -184,7 +191,7 @@ class Enrollment(BaseTimeStamp):
     )
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['created_at']
         constraints = [
             models.UniqueConstraint(
                 fields=['student', 'course'],

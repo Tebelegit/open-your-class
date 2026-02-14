@@ -83,4 +83,3 @@ class LessonAdmin(admin.ModelAdmin):
 class EnrollmentAdmin(admin.ModelAdmin):
     list_display = ('student', 'course', 'created_at')
     list_filter = ('course', 'created_at')
-    raw_id_fields = ('student',)

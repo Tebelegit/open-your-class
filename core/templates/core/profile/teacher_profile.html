@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+opyc | dashboard - {{ user.username }}
+{% endblock %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'core/css/profile.css' %}">
+
+{% block main %}
+<div class="text-center py-2 px-4">
+    <h1 class="">
+        welcome, teacher @{{ user.username }} 
+    </h1> <hr class="w-50 mx-auto">
+
+    <div>
+        <h1>
+            cours enseignés/diffusés 
+        </h1>
+        <hr class="w-50 mx-auto"> <br>
+        <span>  
+            {% for course in courses %}
+              {% if course %}
+              {{ course.title }} <br>
+              {% else %}
+              <a href="#!">
+                add new course here!
+              </a>
+              {% endif %}
+            {% endfor %}
+        </span>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}

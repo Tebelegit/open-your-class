@@ -13,19 +13,22 @@ class RegisterForm(UserCreationForm):
 class LoginForm(AuthenticationForm):
     username = forms.CharField(
         widget=forms.TextInput(attrs={
-            'class': 'form-control form-underline no-radius',
-            'placeholder': "username"
+            'class': 'form-control border-top-0 border-end-0 border-start-0 rounded-0 shadow-none',
+            'placeholder': "username",
+            'style': 'border-bottom: 0.8px solid #ccc;'
         })
     )
+
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
-            'class': 'form-control form-underline no-radius',
-            'placeholder': 'Mot de passe'
+            'class': 'form-control border-top-0 border-end-0 border-start-0 rounded-0 shadow-none',
+            'placeholder': 'passw',
+            'style': 'border-bottom: 0.8px solid #ccc;'
         })
     )
 
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)  # On retire 'request' des arguments avant de continuer
+        self.request = kwargs.pop('request', None)  
         super(LoginForm, self).__init__(*args, **kwargs)
 
 class CourseCreateForm(ModelForm):

@@ -8,7 +8,7 @@
 {% block main %}
 <div class="container d-flex justify-content-center align-items-center vh-100">
   <div
-    class="card no-radius no-shadow border border-secondary-subtle p-5"
+    class="card no-radius shadow-0 border border-secondary-subtle p-5"
     style="width: 100%; max-width: 400px"
   >
     <h3 class="text-center mb-5 fw-light">Connexion</h3>
@@ -39,14 +39,14 @@
       </div>
 
       {% if form.non_field_errors %}
-      <div class="alert alert-danger no-radius small">
+      <div class="alert alert-danger rounded-0 small">
         {{ form.non_field_errors }}
       </div>
       {% endif %}
 
       <button
         type="submit"
-        class="btn btn-dark w-100 no-radius text-uppercase py-2 fw-bold mt-3"
+        class="btn btn-dark w-100 rounded-0 text-uppercase py-2 fw-bold mt-3"
       >
         Se connecter
       </button>
