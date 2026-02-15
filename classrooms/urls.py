@@ -4,6 +4,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from core.views import CustomLoginFormView
 
+handler404 = "core.views.custom_404"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/login/', CustomLoginFormView.as_view(), name='login'),

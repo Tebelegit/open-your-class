@@ -1,10 +1,11 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'core/css/list.css' %}" />
 
-{% block title %} opyc | start study {% endblock %} 
+{% block title %} opyc | start study {% endblock %}
 
 {% block main %}
+
+<link rel="stylesheet" href="{% static 'core/css/list.css' %}" />
 
 <div class="container p-4">
   <h2 class="display-6 fw-bold">
@@ -15,9 +16,12 @@
   <hr style="margin: auto" width="50%" noshade="noshade" />
 
   <div class="mt-4 category_list_and__course">
+
     <div class="accordion accordion-flush" id="accordionFlushExample">
+
       {% for cats in categories %}
-      <div class="accordion-item">
+      <div class="accordion-item {% if forloop.counter > 3 %}extra-category d-none{% endif %}">
+        
         <h2 class="accordion-header">
           <button
             class="accordion-button collapsed text-uppercase fs-5"
@@ -30,6 +34,7 @@
             {{ cats.name }}
           </button>
         </h2>
+
         <div
           id="flush-collapse-{{ cats.slug }}"
           class="accordion-collapse collapse"
@@ -39,20 +44,54 @@
             {% for module in cats.modules.all %}
             <a
               role="button"
-              style="padding: 20px"
-              class="d-inline-block fs-2 text-decoration-none text-dark pb-0 pt-0 border"
-              href="{% url 'course_list' cats.slug module.slug %}"            >
-              {% if module %} {{ module.name }} {% else %}
-              <span> no module. </span>
-              {% endif %}
+              class="d-inline-block fs-6 text-decoration-none text-dark p-3 border mb-2"
+              href="{% url 'course_list' cats.slug module.slug %}"
+            >
+              {{ module.name }}
             </a>
+            {% empty %}
+              <span>no module.</span>
             {% endfor %}
           </div>
         </div>
+
       </div>
       {% endfor %}
+
     </div>
+
+    {% if categories|length > 3 %}
+    <div class="text-center mt-3">
+      <button 
+        id="btn-toggle"
+        class="btn btn-outline-warning rounded-0">
+        Voir +
+      </button>
+    </div>
+    {% endif %}
+
   </div>
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const btn = document.getElementById('btn-toggle')
+  const extraCats = document.querySelectorAll('.extra-category')
+
+  if (btn) {
+    btn.addEventListener("click", function () {
+
+      extraCats.forEach(cat => {
+        cat.classList.toggle('d-none')
+      })
+
+      btn.textContent = 
+        btn.textContent.trim() === "Voir +" 
+        ? "Voir -" 
+        : "Voir +"
+    })
+  }
+</script>
 {% endblock %}

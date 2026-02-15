@@ -1,0 +1,12 @@
+/* category_list.html */
+.hidden-cat {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all .4s; /* ou 0.4s */
+}
+
+.show-cat {
+    opacity: 1;
+    max-height: 500px;
+}

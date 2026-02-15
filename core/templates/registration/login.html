@@ -16,12 +16,18 @@
     <form method="post">
       {% csrf_token %}
 
+      {% if request.GET.next %}
+        <div class="alert alert-info py-2 small rounded-0">
+            veuillez vous connecter pour accéder à ce contenu.
+        </div>
+      {% endif %}
+
       <div class="mb-4">
         <label class="form-label small text-muted text-uppercase"
           >Nom d'utilisateur</label
         >
         {{ form.username }} {% if form.username.errors %}
-        <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
+        <div class="text-danger small mt-1 rounded-0">{{ form.username.errors.0 }}</div>
         {% endif %}
       </div>
 

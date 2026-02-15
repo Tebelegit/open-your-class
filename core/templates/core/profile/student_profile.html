@@ -1,16 +1,11 @@
 {% extends 'base.html' %} 
-
-{% block title %} opyc | dashboard - {{ user.username
-}} 
-{% endblock %} 
+{% block title %} opyc | dashboard - {{ user.username }} {% endblock %} 
 
 {% block extra_head %} 
-
 {% load static %}
 <link rel="stylesheet" href="{% static 'core/css/profile.css' %}" />
+{% endblock %} 
 
-
-{% endblock %}
 
 {% block main %}
 <div class="text-center py-2 px-4">
@@ -18,26 +13,44 @@
   <hr class="w-50 mx-auto" />
 
   <aside>
-    <h2>cours reservés</h2>
+    <h2>cours suivis</h2>
     <hr class="w-50 mx-auto" />
 
-    <div class="mx-auto" style="max-width: 500px">
+    <div class="mx-auto" style="max-width: 600px">
       {% for bc in booked_courses %}
-      <div class="d-flex gap-2 border-bottom pb-2 p-2">
-        <span class="text-muted">{{ forloop.counter }}.</span>
-        <a style="color: goldenrod; text-decoration: none" href="#!">
-          {{ bc.course.title }}
-        </a>
+      <div
+        class="d-flex justify-content-between align-items-center border-bottom py-3 px-2"
+      >
+        <div class="text-start">
+          <span class="text-muted small">{{ forloop.counter }}.</span>
+          <span class="ms-2 fw-medium" style="color: goldenrod">
+            {{ bc.course.title }}
+          </span>
+        </div>
+
+        <div class="text-end">
+          <a
+            href="{% url 'chapter_list' bc.course.module.category.slug bc.course.module.slug bc.course.slug %}"
+            class="text-decoration-none small text-dark border-bottom border-dark"
+          >
+            détail du cours <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
       </div>
       {% empty %}
-      <div class="mt-4">
+      <div class="mt-4 mb-4 text-center">
         <p class="text-muted">you have no booked courses for moment.</p>
-        <hr class="w-50 mx-auto" />
-        <a href="#!" class="text-decoration-none rounded-0 btn btn-dark p-3">
-          make a new booking!
-        </a>
       </div>
       {% endfor %}
+
+      <div class="mt-5">
+        <a
+          href="{% url 'category_list' %}"
+          class="text-decoration-none rounded-0 btn btn-dark p-2"
+        >
+          Learn here now!
+        </a>
+      </div>
     </div>
   </aside>
 </div>

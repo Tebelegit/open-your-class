@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5 mt-5 text-center" style="max-width: 900px;">
+
+    <h1 class="display-4 fw-bold mb-3">
+        Cette page n’existe pas.
+    </h1>
+
+    <p class="text-muted mb-5 leading-relaxed">
+        Peut-être que le contenu a été déplacé ou supprimé.<br>
+        Voici ce que vous pouvez explorer 👇
+    </p>
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <form action="{% url 'course_list' %}" method="get">
+                <div class="input-group input-group-lg">
+                    <input type="text" 
+                           name="q" 
+                           placeholder="Rechercher une formation..." 
+                           class="form-control border-secondary-subtle shadow-sm">
+                    <button class="btn btn-outline-secondary" type="submit">Rechercher</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="mb-5">
+        <h2 class="h4 fw-semibold mb-4">Formations populaires</h2>
+
+        <div class="row g-4">
+            {% for course in popular_courses %}
+                <div class="col-md-4">
+                    <a href="{{ course.get_absolute_url }}" 
+                       class="card h-100 text-decoration-none border shadow-sm transition-hover p-3">
+                        <div class="card-body p-0">
+                            <h3 class="h6 fw-bold text-dark mb-2">{{ course.title }}</h3>
+                            <p class="small text-muted mb-0">
+                                {{ course.module.category.name }}
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="mb-5">
+        <h2 class="h4 fw-semibold mb-3">Catégories</h2>
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+            {% for cat in categories %}
+                <a href="{% url 'category_detail' cat.slug %}" 
+                   class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                    {{ cat.name }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'index' %}" class="btn btn-dark btn-lg px-5 shadow-sm">
+            Retour à l’accueil
+        </a>
+    </div>
+
+</div>
+
+<style>
+    /* Petit bonus pour l'effet de survol sur les cartes */
+    .transition-hover {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        border-color: #409763 !important;
+    }
+</style>
+{% endblock %}

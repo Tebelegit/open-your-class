@@ -1,38 +1,85 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block title %} opyc | dashboard - {{ user.username
+}} {% endblock %} {% block extra_head %} {% load static %}
+<link rel="stylesheet" href="{% static 'core/css/profile.css' %}" />
+{% endblock %} {% block main %}
+<div class="container py-4">
+  <div class="text-center mb-5">
+    <h1 class="fw-light">
+      welcome, teacher <span class="fw-bold">@{{ user.username }}</span>
+    </h1>
+    <hr class="w-25 mx-auto" />
+  </div>
 
-{% block title %}
-opyc | dashboard - {{ user.username }}
-{% endblock %}
+  <div class="row g-4">
+    <aside class="col-md-3 border-end">
+      <div class="d-grid gap-2">
+        <a class="text-decoration-none rounded-0 btn btn-dark p-3" href="#!">
+          Info generale &nbsp; <i class="bi bi-info-circle"></i>
+        </a>
+        <a class="text-decoration-none rounded-0 btn btn-dark p-3" href="#!">
+          Publier un nouveau cours &nbsp; <i class="bi bi-send-plus"></i>
+        </a>
+        <a
+          class="text-decoration-none rounded-0 btn btn-outline-dark p-3"
+          href="#!"
+        >
+          Mes apprenants
+        </a>
+      </div>
+    </aside>
 
-{% load static %}
-<link rel="stylesheet" href="{% static 'core/css/profile.css' %}">
+    <div class="col-md-9 ps-md-5">
+      <h2
+        style="
+          padding-bottom: 5px;
+          border-bottom: 1px solid #ccc;
+          display: inline-flex;
+        "
+        class="tracking-wider mb-4"
+      >
+        cours publiés
+      </h2>
 
-{% block main %}
-<div class="text-center py-2 px-4">
-    <h1 class="">
-        welcome, teacher @{{ user.username }} 
-    </h1> <hr class="w-50 mx-auto">
+      <div class="list-group list-group-flush">
+        {% for course in page_obj %}
+        <div
+          class="py-3 border-bottom d-flex justify-content-between align-items-center"
+        >
+          <span class="text-muted small me-3">{{ page_obj.start_index|add:forloop.counter0 }}.</span>
+          <span class="flex-grow-1 text-dark">{{ course.title }}</span>
+          <a
+            href="#!"
+            class="btn btn-sm btn-link text-warning text-decoration-none"
+            >edit</a
+          >
+        </div>
+        {% empty %}
+        <div class="py-5 text-center">
+          <p class="text-muted">you published no course.</p>
+          <a href="#!" class="text-warning text-decoration-none"
+            >add your first course here</a
+          >
+        </div>
+        {% endfor %}
+        <div class="pagination mt-4">
+          <span class="step-links">
+            {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
 
-    <div>
-        <h1>
-            cours enseignés/diffusés 
-        </h1>
-        <hr class="w-50 mx-auto"> <br>
-        <span>  
-            {% for course in courses %}
-              {% if course %}
-              {{ course.title }} <br>
-              {% else %}
-              <a href="#!">
-                add new course here!
-              </a>
-              {% endif %}
-            {% endfor %}
-        </span>
+            <span class="current">
+              Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+          </span>
+        </div>
+      </div>
     </div>
-
+  </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
 {% endblock %}
