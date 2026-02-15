@@ -6,7 +6,6 @@ from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 from .utils import BaseTimeStamp, SlugBaseModel
 
-
 class TheUser(AbstractUser):
     STUDENT = 'student'
     TEACHER = 'teacher'
